@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Sueldo Neto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px); /* Ancho del input menos el padding */
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            display: none;
+        }
+        .resultado.mostrar {
+            display: block;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        .info-symbol {
+            font-size: 16px;
+            color: #007bff;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            overflow: auto;
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Sueldo Neto</h1>
+        <form id="sueldo_form" method="POST" onsubmit="return validateForm()">
+            <input type="text" name="sueldo_bruto" id="sueldo_bruto" placeholder="Sueldo Bruto Anual">
+            <span id="error_message" class="error" style="display:none;">Por favor, introduce un sueldo bruto válido.</span>
+            <input type="submit" value="Calcular Sueldo Neto">
+        </form>
+        <div id="resultado" class="resultado">
+            <h2>Sueldo Neto</h2>
+            <p id="sueldo_neto_anual"></p>
+            <p id="sueldo_neto_mensual"></p>
+            <span id="info_symbol" class="info-symbol" onclick="openModal()">ℹ</span>
+        </div>
+    </div>
+    <div id="modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal(event)">&times;</span>
+            <p>El sueldo neto se calcula restando las retenciones de impuestos y las cotizaciones a la Seguridad Social del sueldo bruto. La retención de impuestos varía según la situación personal y otros factores.</p>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            var sueldoBrutoInput = document.getElementById("sueldo_bruto");
+            var errorMessage = document.getElementById("error_message");
+
+            if (sueldoBrutoInput.value.trim() === "") {
+                errorMessage.style.display = "block";
+                sueldoBrutoInput.focus();
+                return false;
+            }
+
+            errorMessage.style.display = "none";
+            return true;
+        }
+
+        document.getElementById("sueldo_form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe
+            if (validateForm()) {
+                // Si el formulario es válido, realizar el cálculo y mostrar el resultado
+                var sueldoBruto = parseFloat(document.getElementById("sueldo_bruto").value);
+                var sueldoNetoAnual = calcularSueldoNeto(sueldoBruto);
+                var sueldoNetoMensual = sueldoNetoAnual / 12; // Divide el sueldo neto anual entre 12 para obtener el sueldo neto mensual
+                document.getElementById("sueldo_neto_anual").innerText = "Anual: " + sueldoNetoAnual.toFixed(2) + " €";
+                document.getElementById("sueldo_neto_mensual").innerText = "Mensual: " + sueldoNetoMensual.toFixed(2) + " €";
+                document.getElementById("resultado").classList.add("mostrar");
+            }
+        });
+
+        // Función para calcular el sueldo neto (debes reemplazarla con tu implementación real)
+        function calcularSueldoNeto(sueldoBruto) {
+            // Aquí va tu lógica de cálculo del sueldo neto
+            return sueldoBruto * 0.7; // Ejemplo de cálculo
+        }
+
+        function openModal() {
+            document.getElementById("modal").style.display = "block";
+        }
+
+        function closeModal(event) {
+            if (event.target === document.getElementById("modal")) {
+                document.getElementById("modal").style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
